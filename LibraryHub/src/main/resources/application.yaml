@@ -1,0 +1,16 @@
+server:
+   port: 5000
+spring:
+   application:
+      name: LibraryHub
+   datasource:
+      url: jdbc:mysql://localhost:3306/LibraryHub?createDatabaseIfNotExist=true
+      username: ${DATABASE_USERNAME:root}
+   jpa:
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.MySQLDialect
+            format_sqp: true
+      hibernate:
+         ddl-auto: update
+      show-sql: true

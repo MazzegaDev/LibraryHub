@@ -1,0 +1,24 @@
+{
+	"configurations": [
+		{
+			"type": "java",
+			"name": "LibraryHub",
+			"request": "launch",
+			"mainClass": "com.Mazzega_Dev.LibraryHub.LibraryHubApplication",
+			"projectName": "LibrayHub"
+		},
+		{
+			"type": "java",
+			"name": "Spring Boot-LibraryHub<LibraryHub",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"mainClass": "com.Mazzega_Dev.LibraryHub.LibraryHubApplication",
+			"projectName": "LibraryHub",
+			"env": {
+				"DATABASE_USERNAME": "root"
+			},
+			"args": "",
+			"envFile": "${workspaceFolder}/.env"
+		}
+	]
+}
