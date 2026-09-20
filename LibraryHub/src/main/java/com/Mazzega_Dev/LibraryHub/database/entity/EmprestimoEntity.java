@@ -46,13 +46,13 @@ public class EmprestimoEntity {
    // "Para um empréstimo existir associado a um usuário, o EmprestimoEntity
    // precisa guardar qual UsuarioEntity está relacionado a ele."
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "usuario_id")
-   @JsonIgnore
+   
    private UsuarioEntity empUsuario;
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "livro_id")
-   @JsonIgnore
+   
    private LivroEntity empLivro;
 }

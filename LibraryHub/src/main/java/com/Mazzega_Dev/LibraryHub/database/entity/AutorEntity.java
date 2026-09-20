@@ -3,6 +3,8 @@ package com.Mazzega_Dev.LibraryHub.database.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,5 +40,6 @@ public class AutorEntity {
    //Usa o nome do atributo da entity
    @OneToMany(mappedBy = "livroAutor")
    @Builder.Default
+   @JsonIgnore
    private List<LivroEntity> livros = new ArrayList<>();
 }

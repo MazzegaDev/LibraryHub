@@ -3,6 +3,8 @@ package com.Mazzega_Dev.LibraryHub.database.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +41,6 @@ public class UsuarioEntity {
 
    @OneToMany(mappedBy = "empUsuario")
    @Builder.Default
+   @JsonIgnore
    private List<EmprestimoEntity> emprestimos = new ArrayList<>();
 }

@@ -51,10 +51,10 @@ public class LivroEntity {
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn (name = "autor_id")
    //atributo autor representa o relacionamento entre Autor e Livro
-   @JsonIgnore
    private AutorEntity livroAutor; 
 
-   @OneToMany(mappedBy = "empLivro", fetch = FetchType.LAZY)
+   @OneToMany(mappedBy = "empLivro")
    @Builder.Default
+   @JsonIgnore
    private List<EmprestimoEntity> emprestimos = new ArrayList<>();
 }
