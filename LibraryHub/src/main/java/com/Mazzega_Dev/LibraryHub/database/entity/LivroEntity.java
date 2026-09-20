@@ -3,6 +3,8 @@ package com.Mazzega_Dev.LibraryHub.database.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,9 +48,10 @@ public class LivroEntity {
 
 
    //Muitos livros para um autor
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn (name = "autor_id")
    //atributo autor representa o relacionamento entre Autor e Livro
+   @JsonIgnore
    private AutorEntity livroAutor; 
 
    @OneToMany(mappedBy = "empLivro")
