@@ -21,24 +21,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor 
-@NoArgsConstructor 
-@Getter 
-@Setter 
-@Builder 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name = "Emprestimo")
-@Entity 
+@Entity
 public class EmprestimoEntity {
-   @Id 
+   @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Integer empId;
-   
+
    @Column(nullable = false)
    private LocalDate empData;
 
    private LocalDate empDevolucao;
 
    @Enumerated(EnumType.STRING)
+   @Builder.Default
    private Status empStatus = Status.ATIVO;
 
    // "Para um empréstimo existir associado a um usuário, o EmprestimoEntity
@@ -47,7 +48,6 @@ public class EmprestimoEntity {
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "usuario_id")
    private UsuarioEntity empUsuario;
-
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "livro_id")
