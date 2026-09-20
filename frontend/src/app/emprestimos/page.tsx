@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Emprestimo, Livro, Usuario } from '@/types';
+import { Emprestimo, Livro, Usuario, StatusEmprestimo } from '@/types';
 import { EmprestimosService } from '@/services/emprestimos';
 import { LivrosService } from '@/services/livros';
 import { UsuariosService } from '@/services/usuarios';
@@ -9,8 +9,11 @@ import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
 import { EmprestimoFormModal } from '@/components/emprestimos/EmprestimoFormModal';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import { Plus, ArrowLeftRight, CheckCircle2 } from 'lucide-react';
+import { Modal } from '@/components/ui/Modal';
+import { Select } from '@/components/ui/Select';
+import { Plus, ArrowLeftRight, CheckCircle2, Edit2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import { toast } from 'react-hot-toast';
 
 export default function EmprestimosPage() {
   const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
@@ -22,6 +25,11 @@ export default function EmprestimosPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [emprestimoToReturn, setEmprestimoToReturn] = useState<Emprestimo | null>(null);
   const [isReturning, setIsReturning] = useState(false);
+  
+  // Change status state
+  const [emprestimoToChangeStatus, setEmprestimoToChangeStatus] = useState<Emprestimo | null>(null);
+  const [newStatus, setNewStatus] = useState<StatusEmprestimo | ''>('');
+  const [isChangingStatus, setIsChangingStatus] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -52,19 +60,36 @@ export default function EmprestimosPage() {
       await EmprestimosService.realizarDevolucao(emprestimoToReturn.empId);
       await fetchData();
       setEmprestimoToReturn(null);
+      toast.success('Devolução registrada com sucesso.');
     } catch (err) {
       console.error(err);
-      alert('Não foi possível registrar a devolução.');
+      toast.error('Não foi possível registrar a devolução.');
     } finally {
       setIsReturning(false);
+    }
+  };
+
+  const handleChangeStatus = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emprestimoToChangeStatus || !newStatus) return;
+    try {
+      setIsChangingStatus(true);
+      await EmprestimosService.mudarStatus(emprestimoToChangeStatus.empId, newStatus as StatusEmprestimo);
+      await fetchData();
+      setEmprestimoToChangeStatus(null);
+      setNewStatus('');
+      toast.success('Status alterado com sucesso.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Não foi possível alterar o status.');
+    } finally {
+      setIsChangingStatus(false);
     }
   };
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-';
     try {
-      // The backend returns an array like [2026, 9, 20] instead of ISO string because Jackson LocalDate serializes as array by default if not configured.
-      // Let's handle both string and array just in case.
       if (Array.isArray(dateString)) {
          return `${String(dateString[2]).padStart(2, '0')}/${String(dateString[1]).padStart(2, '0')}/${dateString[0]}`;
       }
@@ -124,15 +149,28 @@ export default function EmprestimosPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        {emp.empStatus === 'ATIVO' && (
+                        <div className="flex justify-end gap-2">
                           <Button 
                             variant="secondary"
-                            onClick={() => setEmprestimoToReturn(emp)}
+                            onClick={() => {
+                              setEmprestimoToChangeStatus(emp);
+                              setNewStatus(emp.empStatus);
+                            }}
                             className="text-xs py-1 px-2 h-auto"
+                            title="Alterar Status"
                           >
-                            <CheckCircle2 className="w-4 h-4 mr-1" /> Devolver
+                            <Edit2 className="w-4 h-4" />
                           </Button>
-                        )}
+                          {emp.empStatus === 'ATIVO' && (
+                            <Button 
+                              variant="secondary"
+                              onClick={() => setEmprestimoToReturn(emp)}
+                              className="text-xs py-1 px-2 h-auto"
+                            >
+                              <CheckCircle2 className="w-4 h-4 mr-1" /> Devolver
+                            </Button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -159,6 +197,37 @@ export default function EmprestimosPage() {
         message={`Confirmar a devolução do livro "${emprestimoToReturn?.empLivro?.livroTitulo}" por ${emprestimoToReturn?.empUsuario?.usuarioNome}?`}
         isLoading={isReturning}
       />
+
+      <Modal 
+        isOpen={!!emprestimoToChangeStatus} 
+        onClose={() => setEmprestimoToChangeStatus(null)} 
+        title="Alterar Status do Empréstimo"
+      >
+        <form onSubmit={handleChangeStatus} className="flex flex-col gap-4 p-2">
+          <p className="text-sm text-gray-600">
+            Alterando status para o empréstimo do livro <strong>{emprestimoToChangeStatus?.empLivro?.livroTitulo}</strong>.
+          </p>
+          <Select 
+            label="Novo Status"
+            value={newStatus}
+            onChange={(e) => setNewStatus(e.target.value as StatusEmprestimo)}
+            required
+            options={[
+              { value: 'ATIVO', label: 'ATIVO' },
+              { value: 'DEVOLVIDO', label: 'DEVOLVIDO' },
+              { value: 'ATRASADO', label: 'ATRASADO' }
+            ]}
+          />
+          <div className="flex justify-end gap-3 mt-4">
+            <Button type="button" variant="ghost" onClick={() => setEmprestimoToChangeStatus(null)} disabled={isChangingStatus}>
+              Cancelar
+            </Button>
+            <Button type="submit" isLoading={isChangingStatus}>
+              Salvar Status
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </>
   );
 }

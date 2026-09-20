@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { UsuarioFormModal } from '@/components/usuarios/UsuarioFormModal';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Plus, Edit2, Trash2, Library } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -52,9 +53,10 @@ export default function UsuariosPage() {
       await UsuariosService.deletar(usuarioToDelete.usuarioId);
       await fetchData();
       setUsuarioToDelete(null);
+      toast.success('Usuário excluído com sucesso.');
     } catch (err) {
       console.error(err);
-      alert('Não foi possível excluir o usuário. Pode haver empréstimos associados a ele.');
+      toast.error('Não foi possível excluir o usuário. Pode haver empréstimos associados a ele.');
     } finally {
       setIsDeleting(false);
     }

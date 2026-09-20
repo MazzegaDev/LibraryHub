@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { AutorFormModal } from '@/components/autores/AutorFormModal';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Plus, Edit2, Trash2, UsersRound } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function AutoresPage() {
   const [autores, setAutores] = useState<Autor[]>([]);
@@ -52,9 +53,10 @@ export default function AutoresPage() {
       await AutoresService.deletar(autorToDelete.autorId);
       await fetchData();
       setAutorToDelete(null);
+      toast.success('Autor excluído com sucesso.');
     } catch (err) {
       console.error(err);
-      alert('Não foi possível excluir o autor. Pode haver livros associados a ele.');
+      toast.error('Não foi possível excluir o autor. Pode haver livros associados a ele.');
     } finally {
       setIsDeleting(false);
     }

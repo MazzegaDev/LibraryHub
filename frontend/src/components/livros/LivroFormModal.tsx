@@ -7,6 +7,7 @@ import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Button } from '../ui/Button';
+import { toast } from 'react-hot-toast';
 
 interface LivroFormModalProps {
   isOpen: boolean;
@@ -24,7 +25,6 @@ export function LivroFormModal({ isOpen, onClose, onSuccess, livroToEdit, autore
     livroAutor: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (livroToEdit) {
@@ -42,19 +42,17 @@ export function LivroFormModal({ isOpen, onClose, onSuccess, livroToEdit, autore
         livroAutor: 0,
       });
     }
-    setError('');
   }, [livroToEdit, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.livroTitulo || !formData.livroIsbn || !formData.livroAutor || !formData.livroAnoPublicacao) {
-      setError('Preencha todos os campos corretamente.');
+      toast.error('Preencha todos os campos corretamente.');
       return;
     }
 
     try {
       setIsLoading(true);
-      setError('');
       
       const payload: LivroDTO = {
         ...formData,
@@ -63,13 +61,15 @@ export function LivroFormModal({ isOpen, onClose, onSuccess, livroToEdit, autore
 
       if (livroToEdit) {
         await LivrosService.atualizar(livroToEdit.livroId, payload);
+        toast.success('Livro atualizado com sucesso!');
       } else {
         await LivrosService.cadastrar(payload);
+        toast.success('Livro cadastrado com sucesso!');
       }
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Ocorreu um erro ao salvar o livro.');
+      toast.error(err.message || 'Ocorreu um erro ao salvar o livro.');
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +78,6 @@ export function LivroFormModal({ isOpen, onClose, onSuccess, livroToEdit, autore
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={livroToEdit ? 'Editar Livro' : 'Novo Livro'}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-1">
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mb-2">{error}</div>}
         
         <Input 
           label="Título" 

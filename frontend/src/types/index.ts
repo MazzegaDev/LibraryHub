@@ -52,5 +52,5 @@ export interface UsuarioDTO {
 
 export interface EmprestimoDTO {
   empUsuario: number; // ID do usuario
-  empLivro: number; // ID do livro
+  empLivro: number[]; // IDs dos livros
 }

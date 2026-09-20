@@ -6,6 +6,7 @@ import { UsuariosService } from '@/services/usuarios';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
+import { toast } from 'react-hot-toast';
 
 interface UsuarioFormModalProps {
   isOpen: boolean;
@@ -21,7 +22,6 @@ export function UsuarioFormModal({ isOpen, onClose, onSuccess, usuarioToEdit }: 
     usuarioTelefone: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (usuarioToEdit) {
@@ -37,29 +37,29 @@ export function UsuarioFormModal({ isOpen, onClose, onSuccess, usuarioToEdit }: 
         usuarioTelefone: '',
       });
     }
-    setError('');
   }, [usuarioToEdit, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.usuarioNome || !formData.usuarioEmail || !formData.usuarioTelefone) {
-      setError('Preencha todos os campos corretamente.');
+      toast.error('Preencha todos os campos corretamente.');
       return;
     }
 
     try {
       setIsLoading(true);
-      setError('');
       
       if (usuarioToEdit) {
         await UsuariosService.atualizar(usuarioToEdit.usuarioId, formData);
+        toast.success('Usuário atualizado com sucesso!');
       } else {
         await UsuariosService.cadastrar(formData);
+        toast.success('Usuário cadastrado com sucesso!');
       }
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Ocorreu um erro ao salvar o usuário.');
+      toast.error(err.message || 'Ocorreu um erro ao salvar o usuário.');
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +68,6 @@ export function UsuarioFormModal({ isOpen, onClose, onSuccess, usuarioToEdit }: 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={usuarioToEdit ? 'Editar Usuário' : 'Novo Usuário'}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-1">
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mb-2">{error}</div>}
         
         <Input 
           label="Nome Completo" 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1 flex flex-col min-h-screen md:ml-0 mt-16 md:mt-0 w-full overflow-x-hidden">
           {children}
         </main>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

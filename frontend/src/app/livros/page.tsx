@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { LivroFormModal } from '@/components/livros/LivroFormModal';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Plus, Edit2, Trash2, BookX } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function LivrosPage() {
   const [livros, setLivros] = useState<Livro[]>([]);
@@ -58,9 +59,10 @@ export default function LivrosPage() {
       await LivrosService.deletar(livroToDelete.livroId);
       await fetchData();
       setLivroToDelete(null);
+      toast.success('Livro excluído com sucesso.');
     } catch (err) {
       console.error(err);
-      alert('Não foi possível excluir o livro. Pode haver empréstimos associados.');
+      toast.error('Não foi possível excluir o livro. Pode haver empréstimos associados.');
     } finally {
       setIsDeleting(false);
     }

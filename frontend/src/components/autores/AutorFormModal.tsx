@@ -6,6 +6,7 @@ import { AutoresService } from '@/services/autores';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
+import { toast } from 'react-hot-toast';
 
 interface AutorFormModalProps {
   isOpen: boolean;
@@ -20,7 +21,6 @@ export function AutorFormModal({ isOpen, onClose, onSuccess, autorToEdit }: Auto
     autorNacionalidade: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (autorToEdit) {
@@ -34,29 +34,29 @@ export function AutorFormModal({ isOpen, onClose, onSuccess, autorToEdit }: Auto
         autorNacionalidade: '',
       });
     }
-    setError('');
   }, [autorToEdit, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.autorNome || !formData.autorNacionalidade) {
-      setError('Preencha todos os campos corretamente.');
+      toast.error('Preencha todos os campos corretamente.');
       return;
     }
 
     try {
       setIsLoading(true);
-      setError('');
       
       if (autorToEdit) {
         await AutoresService.atualizar(autorToEdit.autorId, formData);
+        toast.success('Autor atualizado com sucesso!');
       } else {
         await AutoresService.cadastrar(formData);
+        toast.success('Autor cadastrado com sucesso!');
       }
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Ocorreu um erro ao salvar o autor.');
+      toast.error(err.message || 'Ocorreu um erro ao salvar o autor.');
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +65,6 @@ export function AutorFormModal({ isOpen, onClose, onSuccess, autorToEdit }: Auto
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={autorToEdit ? 'Editar Autor' : 'Novo Autor'}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-1">
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mb-2">{error}</div>}
         
         <Input 
           label="Nome do Autor" 
