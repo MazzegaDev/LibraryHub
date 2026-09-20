@@ -1,6 +1,7 @@
 package com.Mazzega_Dev.LibraryHub.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -48,20 +49,29 @@ public class EmprestimoService {
    public void solicitarEmprestimo(EmprestimoDTO emprestimo) throws NotFoundException, BadRequestException {
 
       UsuarioEntity uEntity = buscarUsuario(emprestimo.getEmpUsuario());
-      LivroEntity lEntity = buscarLivro(emprestimo.getEmpLivro());
-
-      if (lEntity.getLivroDisponivel() == false) {
-         throw new BadRequestException("Esse livro já tem um emprestimo ativo, e não pode ser emprestado no momento");
-      }
 
       LocalDate dataEmprestimLocalDate = LocalDate.now();
 
-      EmprestimoEntity emprestimoEntity = EmprestimoEntity.builder()
-            .empData(dataEmprestimLocalDate).empLivro(lEntity)
-            .empUsuario(uEntity).empStatus(Status.ATIVO).build();
+      List<LivroEntity> livrosValidados = new ArrayList<>();
 
-      lEntity.setLivroDisponivel(false);
-      emprestimoRepository.save(emprestimoEntity);
+      for (Integer livroid : emprestimo.getEmpLivro()) {
+         LivroEntity lEntity = buscarLivro(livroid);
+
+         if (lEntity.getLivroDisponivel() == false) {
+            throw new BadRequestException(
+                  "Esse livro já tem um emprestimo ativo, e não pode ser emprestado no momento");
+         }
+
+         EmprestimoEntity emprestimoEntity = EmprestimoEntity.builder()
+               .empData(dataEmprestimLocalDate).empLivro(lEntity)
+               .empUsuario(uEntity).empStatus(Status.ATIVO).build();
+
+         lEntity.setLivroDisponivel(false);
+
+         emprestimoRepository.save(emprestimoEntity);
+
+      }
+
    }
 
    public List<EmprestimoEntity> consultar() {

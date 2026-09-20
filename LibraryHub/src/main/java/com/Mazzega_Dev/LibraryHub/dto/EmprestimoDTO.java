@@ -1,6 +1,8 @@
 package com.Mazzega_Dev.LibraryHub.dto;
 
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +19,5 @@ public class EmprestimoDTO {
    @NotNull(message = "Informe o usuario que solicitou o emprestimo")
    private Integer empUsuario;
    @NotNull(message = "Informe o livro que foi solicitado")
-   private Integer empLivro;
+   private List<Integer> empLivro;
 }
