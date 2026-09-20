@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.Mazzega_Dev.LibraryHub.database.entity.UsuarioEntity;
 
-
 public interface IUsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
 
-   Optional<UsuarioEntity> findByEmail(String usuarioEmail);
+   Optional<UsuarioEntity> findByUsuarioEmail(String usuarioEmail);
 
-   Optional<UsuarioEntity> findByTelefone(String usuarioTelefone);
+   Optional<UsuarioEntity> findByUsuarioTelefone(String usuarioTelefone);
 }

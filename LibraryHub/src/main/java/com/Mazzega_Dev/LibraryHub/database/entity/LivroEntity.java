@@ -54,7 +54,7 @@ public class LivroEntity {
    @JsonIgnore
    private AutorEntity livroAutor; 
 
-   @OneToMany(mappedBy = "empLivro")
+   @OneToMany(mappedBy = "empLivro", fetch = FetchType.LAZY)
    @Builder.Default
    private List<EmprestimoEntity> emprestimos = new ArrayList<>();
 }

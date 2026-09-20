@@ -3,8 +3,9 @@ package com.Mazzega_Dev.LibraryHub.database.entity;
 import java.time.LocalDate;
 
 import com.Mazzega_Dev.LibraryHub.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
+ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.EnumType;
@@ -47,9 +48,11 @@ public class EmprestimoEntity {
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "usuario_id")
+   @JsonIgnore
    private UsuarioEntity empUsuario;
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "livro_id")
+   @JsonIgnore
    private LivroEntity empLivro;
 }

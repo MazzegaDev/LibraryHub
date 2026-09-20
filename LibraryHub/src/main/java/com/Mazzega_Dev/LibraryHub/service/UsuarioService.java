@@ -19,7 +19,7 @@ public class UsuarioService {
    private final IUsuarioRepository usuarioRepository;
 
    private void verificarDisponibilidadeEmail(String usuarioEmail) throws BadRequestException {
-      UsuarioEntity usuarioEntity = usuarioRepository.findByEmail(usuarioEmail)
+      UsuarioEntity usuarioEntity = usuarioRepository.findByUsuarioEmail(usuarioEmail)
             .orElse(null);
 
       if (usuarioEntity != null) {
@@ -29,7 +29,7 @@ public class UsuarioService {
    }
 
    private void verificarDisponibilidadeTelefone(String usuarioTelefone) throws BadRequestException {
-      UsuarioEntity usuarioEntity = usuarioRepository.findByTelefone(usuarioTelefone)
+      UsuarioEntity usuarioEntity = usuarioRepository.findByUsuarioTelefone(usuarioTelefone)
             .orElse(null);
 
       if (usuarioEntity != null) {
@@ -70,7 +70,7 @@ public class UsuarioService {
    }
 
    public UsuarioEntity consultarPorEmail(String email) throws NotFoundException {
-      return usuarioRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Usuario não encontrado"));
+      return usuarioRepository.findByUsuarioEmail(email).orElseThrow(() -> new NotFoundException("Usuario não encontrado"));
    }
 
    public void atualizar(UsuarioDTO data, Integer id) throws NotFoundException {

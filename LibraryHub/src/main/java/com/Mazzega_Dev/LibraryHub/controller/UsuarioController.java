@@ -2,7 +2,6 @@ package com.Mazzega_Dev.LibraryHub.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.DeleteExchange;
 
 import com.Mazzega_Dev.LibraryHub.database.entity.EmprestimoEntity;
 import com.Mazzega_Dev.LibraryHub.database.entity.UsuarioEntity;
@@ -11,7 +10,6 @@ import com.Mazzega_Dev.LibraryHub.exception.BadRequestException;
 import com.Mazzega_Dev.LibraryHub.exception.NotFoundException;
 import com.Mazzega_Dev.LibraryHub.service.UsuarioService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -23,9 +21,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,9 +32,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UsuarioController {
    private final UsuarioService usuarioService;
 
-   @PostMapping
+   @PostMapping()
    @ResponseStatus(HttpStatus.CREATED)
-   public void cadastrar(@Valid @RequestBody UsuarioDTO data) throws BadRequestException {
+   public void cadastrar(@Valid @RequestBody  UsuarioDTO data) throws BadRequestException {
       usuarioService.cadastrar(data);
    }
 
@@ -52,13 +50,13 @@ public class UsuarioController {
       return usuarioService.consultarPorId(id);
    }
 
-   @GetMapping("/{id}")
+   @GetMapping("/consultar-emprestimo-por-usuario/{id}")
    @ResponseStatus(HttpStatus.OK)
    public List<EmprestimoEntity> consultarEmprestimoPorUsuario(@PathVariable Integer id) throws NotFoundException {
       return usuarioService.consultarEmprestimoPorUsuario(id);
    }
 
-   @GetMapping("/{email}")
+   @GetMapping("/email/{email}")
    @ResponseStatus(HttpStatus.OK)
    public UsuarioEntity consultar(@PathVariable String email) throws NotFoundException {
       return usuarioService.consultarPorEmail(email);
